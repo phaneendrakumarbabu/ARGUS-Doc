@@ -330,7 +330,7 @@ async function loadCases() {
     const res = await fetch('/api/cases');
     if (res.ok) {
       const data = await res.json();
-      Workstation.casesList = data.cases || [];
+      Workstation.casesList = Array.isArray(data) ? data : (data.cases || []);
       renderCasesTable(Workstation.casesList);
       
       // Update topbar case
@@ -398,7 +398,7 @@ async function loadAuditLog() {
     const res = await fetch('/api/audit-log');
     if (res.ok) {
       const data = await res.json();
-      Workstation.auditEntries = data.audit_log || [];
+      Workstation.auditEntries = Array.isArray(data) ? data : (data.audit_log || []);
       renderAuditTable(Workstation.auditEntries);
     }
   } catch (err) {
@@ -410,18 +410,24 @@ function renderAuditTable(entries) {
   const tbody = document.getElementById('audit-table-body');
   if (!tbody) return;
 
-  tbody.innerHTML = entries.map(item => `
-    <tr>
-      <td class="mono" style="font-size:11px; color:var(--primary);">${item.audit_id || 'AUD-001'}</td>
-      <td class="mono" style="font-size:11px; color:var(--text-dim);">${item.timestamp}</td>
-      <td style="font-weight:600; color:#FFFFFF;">${item.actor}</td>
-      <td><span class="badge badge-neutral">${item.category}</span></td>
-      <td>${item.action}</td>
-      <td class="mono" style="font-size:11px;">${item.evidence_target || 'N/A'}</td>
-      <td><span class="status-pill status-${item.status === 'TAMPERED' ? 'tampered' : 'authentic'}">${item.status}</span></td>
-      <td class="mono" style="font-size:10px; color:var(--text-dim);">${item.sha256 ? item.sha256.substring(0, 16) + '...' : 'SEC-VERIFIED'}</td>
-    </tr>
-  `).join('');
+  tbody.innerHTML = entries.map(item => {
+    const aid = item.id || item.audit_id || 'AUD-001';
+    const target = item.target || item.evidence_target || 'N/A';
+    const sig = item.checksum || item.sha256 ? (item.checksum || item.sha256).substring(0, 16) + '...' : 'SEC-VERIFIED';
+    const isTampered = item.status === 'TAMPERED' || item.status === 'Flagged';
+    return `
+      <tr>
+        <td class="mono" style="font-size:11px; color:var(--primary);">${aid}</td>
+        <td class="mono" style="font-size:11px; color:var(--text-dim);">${item.timestamp}</td>
+        <td style="font-weight:600; color:#FFFFFF;">${item.actor}</td>
+        <td><span class="badge badge-neutral">${item.category}</span></td>
+        <td>${item.action}</td>
+        <td class="mono" style="font-size:11px;">${target}</td>
+        <td><span class="status-pill status-${isTampered ? 'tampered' : 'authentic'}">${item.status}</span></td>
+        <td class="mono" style="font-size:10px; color:var(--text-dim);">${sig}</td>
+      </tr>
+    `;
+  }).join('');
 }
 
 function logLocalAudit(actor, action, details) {
