@@ -6,7 +6,7 @@ and compiles an investigator-ready forensic docket in JSON and Markdown formats.
 
 from datetime import datetime, timezone
 from pathlib import Path
-from typing import List, Dict, Any
+from typing import List, Dict, Any, Optional
 from backend.models.schemas import (
     ForensicReport,
     RiskLevel,
