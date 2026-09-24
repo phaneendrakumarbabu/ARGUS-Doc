@@ -173,6 +173,143 @@ async def get_artifact(doc_id: str, filename: str):
     return FileResponse(str(file_path), media_type=media_type)
 
 
+# Forensic Cases and Audit Trail Store
+CASES_REGISTRY = [
+    {
+        "id": "ARG-2026-0042",
+        "title": "Vertex Corp Tax Invoice Forgery Investigation",
+        "category": "Financial Fraud",
+        "status": "Active Investigation",
+        "priority": "High",
+        "created_at": "2026-09-24 16:45:00 UTC",
+        "investigator": "Analyst Marcus Vance",
+        "documents_count": 3,
+        "findings_count": 4,
+        "risk_level": "High",
+        "risk_score": 74.9,
+        "sample_id": "edited_amount_invoice",
+        "description": "Questioned enterprise tax invoice with suspected localized raster patch modification on total payable amount."
+    },
+    {
+        "id": "ARG-2026-0038",
+        "title": "Pacific State University Academic Transcript Authentication",
+        "category": "Academic Credentials",
+        "status": "In Review",
+        "priority": "Critical",
+        "created_at": "2026-09-24 14:12:00 UTC",
+        "investigator": "Analyst Sarah Jenkins",
+        "documents_count": 2,
+        "findings_count": 3,
+        "risk_level": "High",
+        "risk_score": 66.2,
+        "sample_id": "edited_amount_invoice",
+        "description": "Official transcript with suspected GPA line replacement and altered graduation honors font alignment."
+    },
+    {
+        "id": "ARG-2026-0029",
+        "title": "Apex Global Logistics Contract Signature Splicing Audit",
+        "category": "Legal Agreements",
+        "status": "Pending Verification",
+        "priority": "Medium",
+        "created_at": "2026-09-23 18:30:00 UTC",
+        "investigator": "Analyst Marcus Vance",
+        "documents_count": 1,
+        "findings_count": 2,
+        "risk_level": "Medium",
+        "risk_score": 42.0,
+        "sample_id": "conflicting_certificate",
+        "description": "Commercial supply agreement presenting conflicting software producer metadata tags against visual pixel baseline."
+    },
+    {
+        "id": "ARG-2026-0015",
+        "title": "Nexus Technologies Executive Offer Letter Baseline Verification",
+        "category": "Corporate HR",
+        "status": "Closed / Verified",
+        "priority": "Low",
+        "created_at": "2026-09-22 09:15:00 UTC",
+        "investigator": "Analyst David Ross",
+        "documents_count": 1,
+        "findings_count": 0,
+        "risk_level": "Low",
+        "risk_score": 6.1,
+        "sample_id": "clean_invoice",
+        "description": "Authentic digital employment offer. Early stop executed with zero anomalous regions detected."
+    }
+]
+
+AUDIT_LOG_EVENTS = [
+    {
+        "id": "AUD-9941",
+        "timestamp": "2026-09-24 18:55:04 UTC",
+        "actor": "Analyst Marcus Vance",
+        "action": "Generated Court-Ready Forensic Docket",
+        "target": "DOC_20260924_124116_80dba2",
+        "category": "Reporting",
+        "status": "Completed",
+        "checksum": "8f9a2d1c8e7a63b2"
+    },
+    {
+        "id": "AUD-9940",
+        "timestamp": "2026-09-24 18:54:12 UTC",
+        "actor": "ARGUS AI Engine",
+        "action": "Flagged Finding F-001 (High ELA Compression Residual)",
+        "target": "edited_amount_invoice.pdf",
+        "category": "Analysis",
+        "status": "Flagged",
+        "checksum": "3b71f92a105c48de"
+    },
+    {
+        "id": "AUD-9939",
+        "timestamp": "2026-09-24 18:53:30 UTC",
+        "actor": "System Ingestion",
+        "action": "Preserved Original Stream & Computed SHA-256",
+        "target": "edited_amount_invoice.pdf",
+        "category": "Chain of Custody",
+        "status": "Verified",
+        "checksum": "a82f019b7829cd55"
+    },
+    {
+        "id": "AUD-9938",
+        "timestamp": "2026-09-24 18:50:18 UTC",
+        "actor": "Analyst Marcus Vance",
+        "action": "Initiated Multi-Agent Forensic Inspection",
+        "target": "CASE #ARG-2026-0042",
+        "category": "Investigation",
+        "status": "Active",
+        "checksum": "f104d88e2c901aa7"
+    }
+]
+
+
+@app.get("/api/cases")
+async def list_cases():
+    """Lists forensic investigation cases."""
+    return CASES_REGISTRY
+
+
+@app.get("/api/audit-log")
+async def get_audit_log():
+    """Returns chronological forensic audit trail."""
+    return AUDIT_LOG_EVENTS
+
+
+@app.post("/api/audit-log")
+async def append_audit_log(entry: Dict[str, Any]):
+    """Appends an event to the forensic audit log."""
+    new_entry = {
+        "id": f"AUD-{len(AUDIT_LOG_EVENTS) + 9942}",
+        "timestamp": entry.get("timestamp") or "2026-09-24 19:00:00 UTC",
+        "actor": entry.get("actor") or "Analyst Marcus Vance",
+        "action": entry.get("action") or "Forensic Action",
+        "target": entry.get("target") or "Document",
+        "category": entry.get("category") or "Investigation",
+        "status": entry.get("status") or "Recorded",
+        "checksum": entry.get("checksum") or "e481b0a8f9c1"
+    }
+    AUDIT_LOG_EVENTS.insert(0, new_entry)
+    return new_entry
+
+
 # Mount static frontend directory
 frontend_dir = BASE_DIR / "frontend"
 if frontend_dir.exists():

@@ -1,355 +1,953 @@
 <!DOCTYPE html>
-<html lang="en">
+<html lang="en" class="dark">
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>ADFF — Agentic AI Document Tampering Detection & Forensic Analysis</title>
-  <meta name="description" content="Multi-agent document tampering detection and forensic investigation console with adaptive orchestrator control loop.">
+  <title>ARGUS-Doc — Digital Forensics Workstation</title>
+  <meta name="description" content="Professional digital-forensics workstation for document tampering detection, evidentiary reasoning, chain of custody, and court reporting.">
   
-  <!-- Fonts: Architects Daughter (Sans), Fira Code (Mono) -->
+  <!-- Fonts: Inter & JetBrains Mono -->
   <link rel="preconnect" href="https://fonts.googleapis.com">
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-  <link href="https://fonts.googleapis.com/css2?family=Architects+Daughter&family=Fira+Code:wght@400;500;600;700&display=swap" rel="stylesheet">
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800&family=JetBrains+Mono:wght@400;500;600;700&display=swap" rel="stylesheet">
   
-  <!-- Stylesheet -->
-  <link rel="stylesheet" href="/static/style.css?v=original_theme">
+  <link rel="stylesheet" href="/static/style.css?v=workstation_3.0">
 </head>
-<body>
-  <!-- Top Navigation Header -->
-  <header class="app-header">
-    <div class="header-left">
-      <div class="brand-logo" title="ADFF Forensic Intelligence Platform">
-        <div class="logo-icon" aria-hidden="true">
-          <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
-            <path d="M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10z"/>
-            <path d="m9 12 2 2 4-4"/>
-          </svg>
-        </div>
-        <div class="brand-text">
-          <span class="brand-title">ADFF</span>
-          <span class="brand-subtitle">Forensic Intelligence Platform</span>
-        </div>
+<body class="workstation-app">
+
+  <!-- =========================================================================
+       Left Persistent Workstation Navigation Sidebar
+       ========================================================================= -->
+  <aside class="workstation-sidebar" aria-label="Main Navigation">
+    <!-- Brand Header -->
+    <div class="sidebar-brand">
+      <div class="brand-shield" aria-hidden="true">
+        <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2">
+          <path d="M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10z"/>
+          <circle cx="12" cy="11" r="3"/>
+          <line x1="12" y1="14" x2="12" y2="17"/>
+        </svg>
       </div>
-      <div class="system-status-pill" role="status" aria-label="System status: 10 specialized forensic agents online">
-        <span class="status-indicator" aria-hidden="true"></span>
-        <span class="status-label">10 Specialized Agents Online</span>
+      <div class="brand-meta">
+        <span class="brand-name">ARGUS<span class="brand-accent">-DOC</span></span>
+        <span class="brand-tagline">Forensic Workstation</span>
       </div>
     </div>
 
-    <div class="header-center">
-      <div class="sample-loader-container">
-        <label for="sample-select" class="sample-label">Quick Test Cases:</label>
-        <div class="select-wrapper">
-          <select id="sample-select" aria-label="Select a synthetic test case">
-            <option value="" disabled selected>Select a synthetic benchmark case...</option>
-            <option value="clean_invoice">1. Clean Invoice (Demonstrates Early Stop)</option>
-            <option value="edited_amount_invoice">2. Doctored Invoice ($5.4k -> $95.4k)</option>
-            <option value="spliced_contract">3. Spliced Contract (Signature & Seal)</option>
-            <option value="conflicting_certificate">4. Conflicting Evidence (Photoshop Meta)</option>
-          </select>
-        </div>
-        <button id="btn-run-sample" class="btn btn-secondary" aria-label="Run selected synthetic case">
-          <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" aria-hidden="true">
-            <polygon points="5 3 19 12 5 21 5 3"/>
+    <!-- Case Navigation Links -->
+    <div class="nav-group">
+      <div class="nav-group-title">CASE WORKSPACE</div>
+      <nav class="nav-menu" role="tablist">
+        <button class="nav-item active" data-view="dashboard" role="tab" aria-selected="true">
+          <svg width="17" height="17" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+            <rect x="3" y="3" width="7" height="7"/>
+            <rect x="14" y="3" width="7" height="7"/>
+            <rect x="14" y="14" width="7" height="7"/>
+            <rect x="3" y="14" width="7" height="7"/>
           </svg>
-          Run Case
+          <span>Dashboard</span>
         </button>
-      </div>
-    </div>
 
-    <div class="header-right">
-      <button id="theme-toggle-btn" class="icon-btn" aria-label="Toggle Light and Dark Mode" title="Toggle Light/Dark Theme">
-        <svg id="theme-icon-sun" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" aria-hidden="true">
-          <circle cx="12" cy="12" r="5"></circle>
-          <line x1="12" y1="1" x2="12" y2="3"></line>
-          <line x1="12" y1="21" x2="12" y2="23"></line>
-          <line x1="4.22" y1="4.22" x2="5.64" y2="5.64"></line>
-          <line x1="18.36" y1="18.36" x2="19.78" y2="19.78"></line>
-          <line x1="1" y1="12" x2="3" y2="12"></line>
-          <line x1="21" y1="12" x2="23" y2="12"></line>
-          <line x1="4.22" y1="19.78" x2="5.64" y2="18.36"></line>
-          <line x1="18.36" y1="5.64" x2="19.78" y2="4.22"></line>
-        </svg>
-        <svg id="theme-icon-moon" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" aria-hidden="true" style="display: none;">
-          <path d="M21 12.79A9 9 0 1 1 11.21 3 7 7 0 0 0 21 12.79z"></path>
-        </svg>
-      </button>
+        <button class="nav-item" data-view="analysis" role="tab" aria-selected="false">
+          <svg width="17" height="17" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+            <circle cx="11" cy="11" r="8"/>
+            <line x1="21" y1="21" x2="16.65" y2="16.65"/>
+            <rect x="8" y="8" width="6" height="6" stroke-dasharray="2 2"/>
+          </svg>
+          <span>Forensics Analysis</span>
+          <span class="nav-badge" id="nav-badge-analysis">Active</span>
+        </button>
 
-      <label for="file-upload-input" class="btn btn-primary" tabindex="0" role="button" aria-label="Upload document file">
-        <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" aria-hidden="true">
-          <path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"/>
-          <polyline points="17 8 12 3 7 8"/>
-          <line x1="12" y1="3" x2="12" y2="15"/>
-        </svg>
-        Upload Document
-      </label>
-      <input type="file" id="file-upload-input" accept=".pdf,.png,.jpg,.jpeg" style="display: none;">
-    </div>
-  </header>
+        <button class="nav-item" data-view="documents" role="tab" aria-selected="false">
+          <svg width="17" height="17" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+            <path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"/>
+            <polyline points="14 2 14 8 20 8"/>
+            <line x1="16" y1="13" x2="8" y2="13"/>
+            <line x1="16" y1="17" x2="8" y2="17"/>
+          </svg>
+          <span>Evidence Locker</span>
+        </button>
 
-  <!-- Main Application Body -->
-  <main class="app-layout">
-    <!-- Left Panel: Ingestion Dropzone & Adaptive Execution Timeline -->
-    <aside class="sidebar-panel">
-      <!-- File Ingestion Card -->
-      <div class="card ingestion-card" id="dropzone" role="region" aria-label="Document Ingestion Dropzone">
-        <div class="dropzone-content">
-          <div class="dropzone-icon" aria-hidden="true">
-            <svg width="26" height="26" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
-              <path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"/>
-              <polyline points="14 2 14 8 20 8"/>
-              <line x1="12" y1="18" x2="12" y2="12"/>
-              <line x1="9" y1="15" x2="12" y2="12"/>
-              <line x1="15" y1="15" x2="12" y2="12"/>
-            </svg>
-          </div>
-          <h3 class="dropzone-title">Drop Document Here</h3>
-          <p class="dropzone-desc">Supports PDF, PNG, JPG (Multi-modal inspection)</p>
-          <div class="file-info-badge" id="current-file-badge" style="display: none;">
-            <span id="current-file-name">filename.pdf</span>
-            <span id="current-file-size" class="badge-sub">0 KB</span>
-          </div>
-        </div>
-      </div>
-
-      <!-- Adaptive Orchestrator Execution Timeline -->
-      <div class="card timeline-card" role="region" aria-label="Orchestrator Decision Trace">
-        <div class="card-header">
-          <div class="card-title-group">
-            <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" aria-hidden="true">
-              <circle cx="12" cy="12" r="10"/>
-              <polyline points="12 6 12 12 16 14"/>
-            </svg>
-            <h3>Orchestrator Decision Trace</h3>
-          </div>
-          <span class="badge badge-subtle" id="trace-step-count">0 Steps</span>
-        </div>
-        <p class="section-hint">Autonomous multi-agent control loop with early stop and adaptive re-examination.</p>
-        
-        <div class="timeline-container" id="timeline-list">
-          <div class="timeline-empty-state">
-            <p>Upload a document or pick a synthetic case to view the adaptive agentic loop in real time.</p>
-          </div>
-        </div>
-      </div>
-    </aside>
-
-    <!-- Center Panel: Multi-View Forensic Visualizer -->
-    <section class="viewer-panel" role="region" aria-label="Forensic Visualizer">
-      <!-- Viewer Controls -->
-      <div class="viewer-toolbar">
-        <div class="view-mode-tabs" role="tablist" aria-label="Forensic view modes">
-          <button class="tab-btn active" data-view="overlay" role="tab" aria-selected="true">
-            <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" aria-hidden="true">
-              <rect x="3" y="3" width="18" height="18" rx="2" ry="2"/>
-              <rect x="7" y="7" width="10" height="10" stroke-dasharray="2 2"/>
-            </svg>
-            Suspicious Overlay
-          </button>
-          <button class="tab-btn" data-view="heatmap" role="tab" aria-selected="false">
-            <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" aria-hidden="true">
-              <circle cx="12" cy="12" r="10"/>
-              <path d="M12 2a10 10 0 0 1 10 10c0 5.5-4.5 10-10 10"/>
-            </svg>
-            Thermal ELA Heatmap
-          </button>
-          <button class="tab-btn" data-view="original" role="tab" aria-selected="false">
-            <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" aria-hidden="true">
-              <rect x="3" y="3" width="18" height="18" rx="2" ry="2"/>
-              <circle cx="8.5" cy="8.5" r="1.5"/>
-              <polyline points="21 15 16 10 5 21"/>
-            </svg>
-            Base Document
-          </button>
-        </div>
-
-        <div class="viewer-actions">
-          <button id="btn-zoom-in" class="icon-btn" title="Zoom In" aria-label="Zoom in">
-            <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" aria-hidden="true">
-              <circle cx="11" cy="11" r="8"/><line x1="21" y1="21" x2="16.65" y2="16.65"/><line x1="11" y1="8" x2="11" y2="14"/><line x1="8" y1="11" x2="14" y2="11"/>
-            </svg>
-          </button>
-          <button id="btn-zoom-out" class="icon-btn" title="Zoom Out" aria-label="Zoom out">
-            <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" aria-hidden="true">
-              <circle cx="11" cy="11" r="8"/><line x1="21" y1="21" x2="16.65" y2="16.65"/><line x1="8" y1="11" x2="14" y2="11"/>
-            </svg>
-          </button>
-          <button id="btn-zoom-reset" class="icon-btn" title="Reset View" aria-label="Reset zoom">
-            <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" aria-hidden="true">
-              <path d="M3 12a9 9 0 1 0 9-9 9.75 9.75 0 0 0-6.74 2.74L3 8"/>
-              <path d="M3 3v5h5"/>
-            </svg>
-          </button>
-        </div>
-      </div>
-
-      <!-- Canvas Display Area -->
-      <div class="canvas-viewport" id="canvas-viewport">
-        <div class="viewport-placeholder" id="viewport-empty">
-          <div class="placeholder-icon" aria-hidden="true">
-            <svg width="44" height="44" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8">
-              <path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"/>
-              <polyline points="14 2 14 8 20 8"/>
-              <path d="M12 18v-6"/>
-              <path d="m9 15 3-3 3 3"/>
-            </svg>
-          </div>
-          <h3>Ready for Forensic Triage</h3>
-          <p>Select a synthetic benchmark case or upload a questioned document to begin forensic analysis.</p>
-        </div>
-
-        <div class="image-stage" id="image-stage" style="display: none;">
-          <img id="forensic-image" src="" alt="Forensic Inspection View">
-          <svg id="interactive-overlay" class="interactive-overlay"></svg>
-        </div>
-
-        <!-- Processing Loader -->
-        <div class="analysis-spinner-overlay" id="spinner-overlay" style="display: none;">
-          <div class="spinner-core" role="status" aria-live="assertive">
-            <div class="spinner-ring" aria-hidden="true"></div>
-            <span class="spinner-text" id="spinner-status-text">Orchestrating Forensic Agents...</span>
-          </div>
-        </div>
-      </div>
-
-      <!-- Suspicious Regions Carousel / List -->
-      <div class="regions-bar" id="regions-bar" style="display: none;">
-        <div class="regions-header">
-          <h4>Localized Anomalies (<span id="region-count">0</span>)</h4>
-          <span class="tag-helper">Click an anomaly to highlight coordinates</span>
-        </div>
-        <div class="regions-carousel" id="regions-chips">
-          <!-- Dynamically populated region chips -->
-        </div>
-      </div>
-    </section>
-
-    <!-- Right Panel: Triage Report, Evidence Lineage & Human Action Checklist -->
-    <aside class="docket-panel">
-      <!-- Triage Risk Header Card -->
-      <div class="card triage-card" id="triage-card" role="region" aria-label="Triage Assessment Summary">
-        <div class="triage-header">
-          <div>
-            <span class="section-eyebrow">Triage Assessment</span>
-            <h2 class="triage-category" id="manipulation-category">Waiting for document...</h2>
-          </div>
-          <div class="risk-badge badge-neutral" id="risk-badge">
-            <span class="risk-dot" aria-hidden="true"></span>
-            <span id="risk-level-label">IDLE</span>
-          </div>
-        </div>
-
-        <!-- Score Meter Gauge -->
-        <div class="risk-score-container">
-          <div class="score-display">
-            <span class="score-num" id="risk-score-num">0.0</span>
-            <span class="score-denom">/ 100</span>
-          </div>
-          <div class="score-track" role="progressbar" aria-valuemin="0" aria-valuemax="100" aria-valuenow="0" id="score-progressbar">
-            <div class="score-fill" id="score-fill" style="width: 0%;"></div>
-          </div>
-          <div class="score-legend">
-            <span>Low (0-35)</span>
-            <span>Medium (36-64)</span>
-            <span>High (65-100)</span>
-          </div>
-        </div>
-
-        <div class="doc-meta-summary" id="doc-meta-summary" style="display: none;">
-          <div class="meta-item">
-            <span class="meta-label">Document ID:</span>
-            <span class="meta-val" id="meta-doc-id">-</span>
-          </div>
-          <div class="meta-item">
-            <span class="meta-label">Genre:</span>
-            <span class="meta-val" id="meta-doc-type">-</span>
-          </div>
-          <div class="meta-item">
-            <span class="meta-label">Timestamp:</span>
-            <span class="meta-val" id="meta-analysis-date">-</span>
-          </div>
-        </div>
-      </div>
-
-      <!-- Unresolved Conflicts Callout -->
-      <div class="conflict-alert" id="conflict-alert" style="display: none;" role="alert">
-        <div class="alert-icon" aria-hidden="true">
-          <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
-            <path d="m21.73 18-8-14a2 2 0 0 0-3.48 0l-8 14A2 2 0 0 0 4 21h16a2 2 0 0 0 1.73-3Z"/>
+        <button class="nav-item" data-view="findings" role="tab" aria-selected="false">
+          <svg width="17" height="17" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+            <polygon points="12 2 2 22 22 22 12 2"/>
             <line x1="12" y1="9" x2="12" y2="13"/>
             <line x1="12" y1="17" x2="12.01" y2="17"/>
           </svg>
-        </div>
-        <div class="alert-content">
-          <h4>Unresolved Cross-Agent Conflict</h4>
-          <p id="conflict-text">Metadata indicates editing software but pixel residual shows uniform rendering.</p>
-        </div>
-      </div>
-
-      <!-- Evidence Matrix: Observations vs Interpretations -->
-      <div class="card evidence-card" role="region" aria-label="Forensic Evidence Matrix">
-        <div class="card-header">
-          <div class="evidence-tabs" role="tablist">
-            <button class="ev-tab-btn active" data-ev-type="interpretations" role="tab" aria-selected="true">Interpretations</button>
-            <button class="ev-tab-btn" data-ev-type="observations" role="tab" aria-selected="false">Observations</button>
-          </div>
-          <span class="badge badge-subtle" id="evidence-count">0 items</span>
-        </div>
-        <div class="evidence-list" id="evidence-list">
-          <div class="empty-evidence-text">Evidence lineage will appear here once forensic analysis completes.</div>
-        </div>
-      </div>
-
-      <!-- Human Investigator Recommended Steps -->
-      <div class="card verification-card" role="region" aria-label="Investigator Verification Checklist">
-        <div class="card-header">
-          <div class="card-title-group">
-            <svg width="17" height="17" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" aria-hidden="true">
-              <path d="M16 21v-2a4 4 0 0 0-4-4H6a4 4 0 0 0-4 4v2"/>
-              <circle cx="9" cy="7" r="4"/>
-              <polyline points="16 11 18 13 22 9"/>
-            </svg>
-            <h3>Investigator Verification Checklist</h3>
-          </div>
-        </div>
-        <ul class="checklist-items" id="verification-checklist">
-          <li class="empty-check-item">Verification checklist populated according to risk level and identified manipulation modality.</li>
-        </ul>
-      </div>
-
-      <!-- Export & Legal Actions -->
-      <div class="export-actions">
-        <button id="btn-export-json" class="btn btn-secondary btn-sm" disabled aria-label="Export report JSON">
-          <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" aria-hidden="true">
-            <polyline points="16 18 22 12 16 6"/>
-            <polyline points="8 6 2 12 8 18"/>
-          </svg>
-          Export JSON (§8)
+          <span>Findings Ledger</span>
+          <span class="nav-pill pill-alert" id="nav-findings-count">4</span>
         </button>
-        <button id="btn-copy-json" class="btn btn-secondary btn-sm" disabled aria-label="Copy JSON to clipboard">
-          <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" aria-hidden="true">
-            <rect x="9" y="9" width="13" height="13" rx="2" ry="2"/>
-            <path d="M5 15H4a2 2 0 0 1-2-2V4a2 2 0 0 1 2-2h9a2 2 0 0 1 2 2v1"/>
+
+        <button class="nav-item" data-view="custody" role="tab" aria-selected="false">
+          <svg width="17" height="17" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+            <rect x="3" y="11" width="18" height="11" rx="2" ry="2"/>
+            <path d="M7 11V7a5 5 0 0 1 10 0v4"/>
           </svg>
-          Copy JSON
+          <span>Chain of Custody</span>
+        </button>
+
+        <button class="nav-item" data-view="timeline" role="tab" aria-selected="false">
+          <svg width="17" height="17" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+            <circle cx="12" cy="12" r="10"/>
+            <polyline points="12 6 12 12 16 14"/>
+          </svg>
+          <span>Forensic Timeline</span>
+        </button>
+
+        <button class="nav-item" data-view="reports" role="tab" aria-selected="false">
+          <svg width="17" height="17" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+            <path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"/>
+            <polyline points="14 2 14 8 20 8"/>
+            <path d="M9 15h6"/>
+            <path d="M9 11h6"/>
+          </svg>
+          <span>Court Reports</span>
+        </button>
+      </nav>
+    </div>
+
+    <!-- System Group -->
+    <div class="nav-group">
+      <div class="nav-group-title">SYSTEM & SECURITY</div>
+      <nav class="nav-menu">
+        <button class="nav-item" data-view="audit" role="tab" aria-selected="false">
+          <svg width="17" height="17" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+            <path d="M16 4h2a2 2 0 0 1 2 2v14a2 2 0 0 1-2 2H6a2 2 0 0 1-2-2V6a2 2 0 0 1 2-2h2"/>
+            <rect x="8" y="2" width="8" height="4" rx="1" ry="1"/>
+            <path d="M9 14l2 2 4-4"/>
+          </svg>
+          <span>Audit Log</span>
+          <span class="nav-dot online" title="Immutable logging online"></span>
+        </button>
+
+        <button class="nav-item" data-view="settings" role="tab" aria-selected="false">
+          <svg width="17" height="17" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+            <circle cx="12" cy="12" r="3"/>
+            <path d="M19.4 15a1.65 1.65 0 0 0 .33 1.82l.06.06a2 2 0 0 1 0 2.83 2 2 0 0 1-2.83 0l-.06-.06a1.65 1.65 0 0 0-1.82-.33 1.65 1.65 0 0 0-1 1.51V21a2 2 0 0 1-2 2 2 2 0 0 1-2-2v-.09A1.65 1.65 0 0 0 9 19.4a1.65 1.65 0 0 0-1.82.33l-.06.06a2 2 0 0 1-2.83 0 2 2 0 0 1 0-2.83l.06-.06a1.65 1.65 0 0 0 .33-1.82 1.65 1.65 0 0 0-1.51-1H3a2 2 0 0 1-2-2 2 2 0 0 1 2-2h.09A1.65 1.65 0 0 0 4.6 9a1.65 1.65 0 0 0-.33-1.82l-.06-.06a2 2 0 0 1 0-2.83 2 2 0 0 1 2.83 0l.06.06a1.65 1.65 0 0 0 1.82.33H9a1.65 1.65 0 0 0 1-1.51V3a2 2 0 0 1 2-2 2 2 0 0 1 2 2v.09a1.65 1.65 0 0 0 1 1.51 1.65 1.65 0 0 0 1.82-.33l.06-.06a2 2 0 0 1 2.83 0 2 2 0 0 1 0 2.83l-.06.06a1.65 1.65 0 0 0-.33 1.82V9a1.65 1.65 0 0 0 1.51 1H21a2 2 0 0 1 2 2 2 2 0 0 1-2 2h-.09a1.65 1.65 0 0 0-1.51 1z"/>
+          </svg>
+          <span>Thresholds</span>
+        </button>
+      </nav>
+    </div>
+
+    <!-- Sidebar Footer / Investigator Profile -->
+    <div class="sidebar-user">
+      <div class="user-avatar">MV</div>
+      <div class="user-info">
+        <span class="user-name">Marcus Vance</span>
+        <span class="user-role">Senior Forensic Analyst</span>
+      </div>
+    </div>
+  </aside>
+
+  <!-- =========================================================================
+       Main Content Stage
+       ========================================================================= -->
+  <div class="workstation-body">
+    <!-- Top Workstation Header Bar -->
+    <header class="workstation-topbar">
+      <!-- Active Case Header Banner -->
+      <div class="active-case-pill" id="active-case-pill">
+        <span class="case-indicator active"></span>
+        <div class="case-meta">
+          <span class="case-label" id="top-case-id">CASE #ARG-2026-0042</span>
+          <span class="case-title" id="top-case-title">Vertex Corp Tax Invoice Forgery Investigation</span>
+        </div>
+        <span class="priority-badge priority-high" id="top-case-priority">HIGH</span>
+      </div>
+
+      <!-- Global Search -->
+      <div class="global-search-container">
+        <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+          <circle cx="11" cy="11" r="8"/>
+          <line x1="21" y1="21" x2="16.65" y2="16.65"/>
+        </svg>
+        <input type="text" id="global-search-input" placeholder="Search cases, documents, SHA-256 hashes, findings (F-001)..." aria-label="Global forensic search">
+        <kbd class="search-kbd">/</kbd>
+      </div>
+
+      <!-- Quick Benchmark Runner Dropdown -->
+      <div class="benchmark-suite">
+        <label for="benchmark-select" class="suite-label">Benchmark Cases:</label>
+        <select id="benchmark-select" aria-label="Load a forensic benchmark case">
+          <option value="" disabled selected>Select synthetic case...</option>
+          <option value="edited_amount_invoice">1. Doctored Invoice ($5.4k -> $95.4k)</option>
+          <option value="clean_invoice">2. Clean Invoice (Demonstrates Early Stop)</option>
+          <option value="spliced_contract">3. Spliced Contract (Imported Signature)</option>
+          <option value="conflicting_certificate">4. Conflicting Certificate (Photoshop Tag)</option>
+        </select>
+        <button id="btn-run-benchmark" class="btn btn-action" disabled>
+          <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5">
+            <polygon points="5 3 19 12 5 21 5 3"/>
+          </svg>
+          Run
         </button>
       </div>
-      
-      <p class="legal-disclaimer">
-        <strong>Investigator Notice:</strong> These findings are forensic indicators for further examination and do not independently establish legal proof of forgery. Final determination rests with a qualified human investigator.
-      </p>
-    </aside>
-  </main>
 
-  <!-- Toast Notification Feedback -->
-  <div id="toast" class="toast" role="status" aria-live="polite" style="display: none;">
-    <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" aria-hidden="true">
-      <polyline points="20 6 9 17 4 12"></polyline>
-    </svg>
-    <span id="toast-message">Action completed successfully</span>
+      <!-- Upload Evidence Button -->
+      <div class="topbar-actions">
+        <label for="file-upload-input" class="btn btn-primary" tabindex="0" role="button" aria-label="Ingest Questioned Document">
+          <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2">
+            <path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"/>
+            <polyline points="17 8 12 3 7 8"/>
+            <line x1="12" y1="3" x2="12" y2="15"/>
+          </svg>
+          <span>Ingest Evidence</span>
+        </label>
+        <input type="file" id="file-upload-input" accept=".pdf,.png,.jpg,.jpeg" style="display: none;">
+      </div>
+    </header>
+
+    <!-- Dynamic Workspace Views Container -->
+    <main class="workstation-viewport">
+
+      <!-- =====================================================================
+           VIEW 1: CASE DASHBOARD
+           ===================================================================== -->
+      <section class="workspace-view" id="view-dashboard" style="display: none;">
+        <!-- Top Actionable KPI Cards -->
+        <div class="kpi-grid">
+          <div class="kpi-card" data-action="view-cases">
+            <div class="kpi-header">
+              <span class="kpi-title">ACTIVE CASES</span>
+              <span class="kpi-trend positive">↑ 3 this week</span>
+            </div>
+            <div class="kpi-body">
+              <span class="kpi-value">12</span>
+              <span class="kpi-sub">Active Investigations</span>
+            </div>
+            <div class="kpi-footer">
+              <span>View all cases →</span>
+            </div>
+          </div>
+
+          <div class="kpi-card" data-action="view-analysis">
+            <div class="kpi-header">
+              <span class="kpi-title">DOCUMENTS ANALYZED</span>
+              <span class="kpi-trend neutral">48h turnover</span>
+            </div>
+            <div class="kpi-body">
+              <span class="kpi-value" id="kpi-docs-analyzed">24</span>
+              <span class="kpi-sub">Questioned Files Preserved</span>
+            </div>
+            <div class="kpi-footer">
+              <span>Open evidence locker →</span>
+            </div>
+          </div>
+
+          <div class="kpi-card kpi-warning" data-action="view-findings">
+            <div class="kpi-header">
+              <span class="kpi-title">SUSPICIOUS DOCUMENTS</span>
+              <span class="kpi-trend negative">33.3% Flag Rate</span>
+            </div>
+            <div class="kpi-body">
+              <span class="kpi-value" id="kpi-suspicious-count">8</span>
+              <span class="kpi-sub">Confirmed Incongruities</span>
+            </div>
+            <div class="kpi-footer">
+              <span>Inspect flagged files →</span>
+            </div>
+          </div>
+
+          <div class="kpi-card kpi-danger" data-action="view-findings">
+            <div class="kpi-header">
+              <span class="kpi-title">CRITICAL FINDINGS</span>
+              <span class="kpi-trend negative">High Priority</span>
+            </div>
+            <div class="kpi-body">
+              <span class="kpi-value" id="kpi-critical-count">4</span>
+              <span class="kpi-sub">F-001..F-004 Logged</span>
+            </div>
+            <div class="kpi-footer">
+              <span>Review findings ledger →</span>
+            </div>
+          </div>
+        </div>
+
+        <!-- Active Investigations Table -->
+        <div class="panel-box">
+          <div class="panel-header">
+            <div class="panel-title-wrap">
+              <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                <path d="M22 19a2 2 0 0 1-2 2H4a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h5l2 3h9a2 2 0 0 1 2 2z"/>
+              </svg>
+              <h3>Active Forensic Investigations</h3>
+            </div>
+            <span class="badge badge-neutral">4 Registered Cases</span>
+          </div>
+
+          <div class="table-responsive">
+            <table class="forensic-table" id="cases-table">
+              <thead>
+                <tr>
+                  <th>Case ID</th>
+                  <th>Title & Description</th>
+                  <th>Category</th>
+                  <th>Priority</th>
+                  <th>Findings</th>
+                  <th>Triage Score</th>
+                  <th>Status</th>
+                  <th>Action</th>
+                </tr>
+              </thead>
+              <tbody id="cases-table-body">
+                <!-- Dynamically populated from /api/cases -->
+              </tbody>
+            </table>
+          </div>
+        </div>
+      </section>
+
+      <!-- =====================================================================
+           VIEW 2: HERO 3-COLUMN DOCUMENT FORENSICS WORKSPACE (Analysis)
+           ===================================================================== -->
+      <section class="workspace-view" id="view-analysis">
+        <div class="forensics-workspace-grid">
+
+          <!-- COLUMN 1: CASE DOCUMENTS & EVIDENCE LOCKER -->
+          <aside class="col-documents-pane">
+            <div class="pane-header">
+              <span class="pane-title">CASE EVIDENCE (4)</span>
+              <button class="icon-btn-xs" id="btn-quick-ingest" title="Ingest New File">+</button>
+            </div>
+
+            <!-- Documents Search Filter -->
+            <div class="doc-search-box">
+              <input type="text" id="doc-filter-input" placeholder="Filter documents...">
+            </div>
+
+            <!-- Case Document Items List -->
+            <div class="doc-items-list" id="doc-items-list">
+              <div class="doc-item active" data-sample="edited_amount_invoice">
+                <div class="doc-icon-wrap">
+                  <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                    <path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"/>
+                    <polyline points="14 2 14 8 20 8"/>
+                  </svg>
+                </div>
+                <div class="doc-item-meta">
+                  <span class="doc-item-name" title="edited_amount_invoice.pdf">edited_amount_invoice.pdf</span>
+                  <div class="doc-item-sub">
+                    <span class="hash-snippet mono">sha:8f9a2d...</span>
+                    <span class="status-pill status-tampered">HIGH RISK</span>
+                  </div>
+                </div>
+              </div>
+
+              <div class="doc-item" data-sample="clean_invoice">
+                <div class="doc-icon-wrap">
+                  <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                    <path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"/>
+                    <polyline points="14 2 14 8 20 8"/>
+                  </svg>
+                </div>
+                <div class="doc-item-meta">
+                  <span class="doc-item-name" title="clean_invoice.pdf">clean_invoice.pdf</span>
+                  <div class="doc-item-sub">
+                    <span class="hash-snippet mono">sha:c104e7...</span>
+                    <span class="status-pill status-authentic">AUTHENTIC</span>
+                  </div>
+                </div>
+              </div>
+
+              <div class="doc-item" data-sample="spliced_contract">
+                <div class="doc-icon-wrap">
+                  <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                    <rect x="3" y="3" width="18" height="18" rx="2"/>
+                    <circle cx="8.5" cy="8.5" r="1.5"/>
+                    <polyline points="21 15 16 10 5 21"/>
+                  </svg>
+                </div>
+                <div class="doc-item-meta">
+                  <span class="doc-item-name" title="spliced_contract.png">spliced_contract.png</span>
+                  <div class="doc-item-sub">
+                    <span class="hash-snippet mono">sha:4d81f2...</span>
+                    <span class="status-pill status-tampered">SPLICED</span>
+                  </div>
+                </div>
+              </div>
+
+              <div class="doc-item" data-sample="conflicting_certificate">
+                <div class="doc-icon-wrap">
+                  <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                    <path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"/>
+                    <polyline points="14 2 14 8 20 8"/>
+                  </svg>
+                </div>
+                <div class="doc-item-meta">
+                  <span class="doc-item-name" title="conflicting_certificate.pdf">conflicting_certificate.pdf</span>
+                  <div class="doc-item-sub">
+                    <span class="hash-snippet mono">sha:93e7b1...</span>
+                    <span class="status-pill status-conflicted">CONFLICT</span>
+                  </div>
+                </div>
+              </div>
+            </div>
+
+            <!-- Evidence Ingestion Mini-Dropzone -->
+            <div class="mini-dropzone" id="mini-dropzone">
+              <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8">
+                <path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"/>
+                <polyline points="14 2 14 8 20 8"/>
+                <line x1="12" y1="18" x2="12" y2="12"/>
+                <line x1="9" y1="15" x2="12" y2="12"/>
+                <line x1="15" y1="15" x2="12" y2="12"/>
+              </svg>
+              <span>Drop evidence here</span>
+              <small>Preserves byte-stream SHA-256</small>
+            </div>
+          </aside>
+
+
+          <!-- COLUMN 2: DOCUMENT VIEWER & HIGH-RES CANVAS -->
+          <section class="col-viewer-pane">
+            <!-- Inspection Canvas Controls Toolbar -->
+            <div class="canvas-controls-bar">
+              <div class="view-layer-tabs" role="tablist">
+                <button class="layer-tab active" data-layer="overlay" role="tab" aria-selected="true">
+                  <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                    <rect x="3" y="3" width="18" height="18" rx="2"/>
+                    <rect x="7" y="7" width="10" height="10" stroke-dasharray="2 2"/>
+                  </svg>
+                  <span>Suspicious Overlay</span>
+                </button>
+                <button class="layer-tab" data-layer="heatmap" role="tab" aria-selected="false">
+                  <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                    <circle cx="12" cy="12" r="10"/>
+                    <path d="M12 2a10 10 0 0 1 10 10c0 5.5-4.5 10-10 10"/>
+                  </svg>
+                  <span>Thermal ELA Heatmap</span>
+                </button>
+                <button class="layer-tab" data-layer="base" role="tab" aria-selected="false">
+                  <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                    <rect x="3" y="3" width="18" height="18" rx="2"/>
+                    <circle cx="8.5" cy="8.5" r="1.5"/>
+                    <polyline points="21 15 16 10 5 21"/>
+                  </svg>
+                  <span>Base Document</span>
+                </button>
+                <button class="layer-tab" data-layer="split" role="tab" aria-selected="false">
+                  <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                    <rect x="3" y="3" width="18" height="18" rx="2"/>
+                    <line x1="12" y1="3" x2="12" y2="21"/>
+                  </svg>
+                  <span>Before/After Wipe</span>
+                </button>
+              </div>
+
+              <!-- Heatmap Opacity Slider -->
+              <div class="control-slider-wrap" id="layer-opacity-wrap">
+                <span class="control-label">Blend:</span>
+                <input type="range" id="layer-opacity-slider" min="10" max="100" value="85" aria-label="Forensic layer opacity">
+                <span class="control-val mono" id="layer-opacity-val">85%</span>
+              </div>
+
+              <!-- Tools: Loupe & Zoom -->
+              <div class="canvas-action-group">
+                <button class="icon-tool" id="btn-loupe" title="Toggle 2.5x Inspection Reticle (M)">
+                  <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                    <circle cx="11" cy="11" r="8"/>
+                    <line x1="21" y1="21" x2="16.65" y2="16.65"/>
+                    <line x1="11" y1="8" x2="11" y2="14"/>
+                    <line x1="8" y1="11" x2="14" y2="11"/>
+                  </svg>
+                </button>
+                <button class="icon-tool" id="btn-canvas-zoom-in" title="Zoom In (+)">
+                  <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                    <line x1="12" y1="5" x2="12" y2="19"/>
+                    <line x1="5" y1="12" x2="19" y2="12"/>
+                  </svg>
+                </button>
+                <button class="icon-tool" id="btn-canvas-zoom-out" title="Zoom Out (-)">
+                  <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                    <line x1="5" y1="12" x2="19" y2="12"/>
+                  </svg>
+                </button>
+                <button class="icon-tool" id="btn-canvas-reset" title="Fit to Viewport (0)">
+                  <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                    <path d="M3 12a9 9 0 1 0 9-9 9.75 9.75 0 0 0-6.74 2.74L3 8"/>
+                    <path d="M3 3v5h5"/>
+                  </svg>
+                </button>
+              </div>
+            </div>
+
+            <!-- Canvas Stage Viewport -->
+            <div class="canvas-viewport-area" id="canvas-viewport-area">
+              <!-- Empty State -->
+              <div class="canvas-empty" id="canvas-empty" style="display: none;">
+                <svg width="48" height="48" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5">
+                  <path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"/>
+                  <polyline points="14 2 14 8 20 8"/>
+                  <line x1="12" y1="18" x2="12" y2="12"/>
+                </svg>
+                <h3>No Questioned Document Selected</h3>
+                <p>Choose an item from the Evidence Locker or ingest a new questioned document.</p>
+              </div>
+
+              <!-- Single Image View Stage -->
+              <div class="document-stage" id="document-stage">
+                <img id="stage-img" src="" alt="Forensic inspection view">
+                <img id="stage-blended-heatmap" src="" alt="Blended ELA Heatmap" style="display: none;">
+                <svg id="stage-svg-overlay" class="stage-svg-overlay"></svg>
+              </div>
+
+              <!-- Split Curtain Wipe Stage -->
+              <div class="curtain-stage" id="curtain-stage" style="display: none;">
+                <div class="curtain-container" id="curtain-container">
+                  <div class="curtain-layer curtain-before">
+                    <img id="curtain-img-before" src="" alt="Base original document">
+                    <span class="curtain-tag left">Original Base</span>
+                  </div>
+                  <div class="curtain-layer curtain-after" id="curtain-after-layer">
+                    <img id="curtain-img-after" src="" alt="Forensic analysis overlay">
+                    <span class="curtain-tag right">Forensic Signal</span>
+                  </div>
+                  <!-- Draggable divider -->
+                  <div class="curtain-divider" id="curtain-divider" role="slider" aria-label="Before/After curtain slider" tabindex="0">
+                    <div class="divider-bar"></div>
+                    <div class="divider-grip">
+                      <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5">
+                        <polyline points="8 17 3 12 8 7"/>
+                        <polyline points="16 17 21 12 16 7"/>
+                      </svg>
+                    </div>
+                  </div>
+                </div>
+              </div>
+
+              <!-- 2.5x Reticle Loupe Magnifier -->
+              <div class="reticle-loupe" id="reticle-loupe" style="display: none;">
+                <canvas id="reticle-canvas" width="170" height="170"></canvas>
+                <div class="reticle-center"></div>
+                <div class="reticle-coords mono" id="reticle-coords">X: 0 | Y: 0</div>
+              </div>
+
+              <!-- Loading Radar Overlay -->
+              <div class="analysis-radar-loader" id="radar-loader" style="display: none;">
+                <div class="radar-circle">
+                  <div class="radar-hand"></div>
+                </div>
+                <span class="radar-text" id="radar-text">Executing Forensic Multi-Agent Loop...</span>
+              </div>
+            </div>
+
+            <!-- Bottom Evidence Metadata Strip -->
+            <div class="evidence-meta-strip" id="evidence-meta-strip">
+              <div class="meta-cell"><span class="meta-k">FILE:</span> <span class="meta-v" id="strip-filename">edited_amount_invoice.pdf</span></div>
+              <div class="meta-cell"><span class="meta-k">FORMAT:</span> <span class="meta-v" id="strip-format">PDF · 300 DPI</span></div>
+              <div class="meta-cell"><span class="meta-k">SHA-256:</span> <span class="meta-v mono" id="strip-sha">8f9a2d1c...8e7a63b2</span></div>
+              <div class="meta-cell"><span class="meta-k">ANOMALIES:</span> <span class="meta-v highlight" id="strip-anomalies">4 Localized Regions</span></div>
+            </div>
+          </section>
+
+
+          <!-- COLUMN 3: ANALYSIS, FINDINGS & REASONING -->
+          <aside class="col-analysis-pane">
+            <div class="pane-header">
+              <span class="pane-title">FORENSIC ANALYSIS & TRIAGE</span>
+              <span class="badge badge-high" id="triage-status-pill">HIGH RISK</span>
+            </div>
+
+            <div class="analysis-scroll-area">
+              <!-- Dual Gauges: Authenticity vs Manipulation Risk -->
+              <div class="triage-metrics-box">
+                <div class="metric-row">
+                  <div class="metric-lead">
+                    <span class="metric-name">Authenticity Confidence</span>
+                    <span class="metric-val mono" id="metric-authenticity-val">25.1%</span>
+                  </div>
+                  <div class="metric-track">
+                    <div class="metric-fill fill-low" id="metric-authenticity-bar" style="width: 25.1%;"></div>
+                  </div>
+                </div>
+
+                <div class="metric-row">
+                  <div class="metric-lead">
+                    <span class="metric-name">Manipulation Probability</span>
+                    <span class="metric-val mono alert" id="metric-manipulation-val">74.9%</span>
+                  </div>
+                  <div class="metric-track">
+                    <div class="metric-fill fill-high" id="metric-manipulation-bar" style="width: 74.9%;"></div>
+                  </div>
+                </div>
+              </div>
+
+              <!-- Transparent AI Reasoning Signals Breakdown -->
+              <div class="section-box">
+                <div class="section-box-header">
+                  <span class="sub-heading">AI REASONING SIGNALS</span>
+                  <span class="helper-text">Multi-Modal Weighting</span>
+                </div>
+                <div class="signal-bars-list">
+                  <div class="signal-item">
+                    <div class="signal-meta">
+                      <span>Typography & Baseline Alignment</span>
+                      <span class="mono" id="sig-typo">96%</span>
+                    </div>
+                    <div class="signal-track"><div class="signal-bar bar-red" id="sig-typo-bar" style="width: 96%;"></div></div>
+                  </div>
+
+                  <div class="signal-item">
+                    <div class="signal-meta">
+                      <span>ELA Compression Discrepancy</span>
+                      <span class="mono" id="sig-ela">92%</span>
+                    </div>
+                    <div class="signal-track"><div class="signal-bar bar-red" id="sig-ela-bar" style="width: 92%;"></div></div>
+                  </div>
+
+                  <div class="signal-item">
+                    <div class="signal-meta">
+                      <span>PDF Object Structure & Incremental</span>
+                      <span class="mono" id="sig-meta">89%</span>
+                    </div>
+                    <div class="signal-track"><div class="signal-bar bar-amber" id="sig-meta-bar" style="width: 89%;"></div></div>
+                  </div>
+
+                  <div class="signal-item">
+                    <div class="signal-meta">
+                      <span>Sensor Noise Uniformity</span>
+                      <span class="mono" id="sig-noise">71%</span>
+                    </div>
+                    <div class="signal-track"><div class="signal-bar bar-amber" id="sig-noise-bar" style="width: 71%;"></div></div>
+                  </div>
+                </div>
+
+                <div class="disclaimer-callout">
+                  <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                    <circle cx="12" cy="12" r="10"/>
+                    <line x1="12" y1="16" x2="12" y2="12"/>
+                    <line x1="12" y1="8" x2="12.01" y2="8"/>
+                  </svg>
+                  <span><strong>Evidentiary Notice:</strong> AI-generated signals are investigatory indicators requiring independent human verification prior to court submission.</span>
+                </div>
+              </div>
+
+              <!-- Unresolved Conflict Banner (If Applicable) -->
+              <div class="conflict-callout" id="analysis-conflict-box" style="display: none;">
+                <div class="conflict-head">
+                  <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                    <path d="m21.73 18-8-14a2 2 0 0 0-3.48 0l-8 14A2 2 0 0 0 4 21h16a2 2 0 0 0 1.73-3Z"/>
+                    <line x1="12" y1="9" x2="12" y2="13"/>
+                    <line x1="12" y1="17" x2="12.01" y2="17"/>
+                  </svg>
+                  <span>Unresolved Cross-Agent Conflict</span>
+                </div>
+                <p id="analysis-conflict-text">Metadata indicates external editor but pixel residuals show uniform rendering.</p>
+              </div>
+
+              <!-- Evidence-Linked Findings Ledger Cards -->
+              <div class="section-box">
+                <div class="section-box-header">
+                  <span class="sub-heading">DOCUMENT FINDINGS</span>
+                  <span class="findings-count" id="findings-summary-count">4 Identified</span>
+                </div>
+
+                <div class="findings-cards-container" id="findings-cards-container">
+                  <!-- Dynamically populated finding cards (F-001, F-002...) -->
+                </div>
+              </div>
+
+              <!-- Explainable Analysis Accordion -->
+              <div class="section-box">
+                <details class="explainable-details" open>
+                  <summary class="explainable-summary">
+                    <span>Explainable Analysis: Why was this flagged?</span>
+                    <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                      <polyline points="6 9 12 15 18 9"/>
+                    </svg>
+                  </summary>
+                  <ol class="explain-steps" id="explainable-steps-list">
+                    <li>Localized raster patch detected over the numeric financial field.</li>
+                    <li>Error level compression energy exceeds 3-sigma variance threshold.</li>
+                    <li>OCR font baseline alignment deviates by 4.2px relative to adjacent lines.</li>
+                  </ol>
+                </details>
+              </div>
+            </div>
+          </aside>
+
+        </div>
+      </section>
+
+      <!-- =====================================================================
+           VIEW 3: EVIDENCE LOCKER (Documents Queue & Ingestion)
+           ===================================================================== -->
+      <section class="workspace-view" id="view-documents" style="display: none;">
+        <div class="panel-box">
+          <div class="panel-header">
+            <div class="panel-title-wrap">
+              <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                <path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"/>
+                <polyline points="14 2 14 8 20 8"/>
+              </svg>
+              <h3>Questioned Documents Locker</h3>
+            </div>
+            <label for="file-upload-input-2" class="btn btn-secondary btn-sm" tabindex="0">
+              + Ingest New Document
+            </label>
+            <input type="file" id="file-upload-input-2" accept=".pdf,.png,.jpg,.jpeg" style="display: none;">
+          </div>
+
+          <!-- Large Dropzone -->
+          <div class="full-dropzone" id="full-dropzone">
+            <div class="full-drop-inner">
+              <svg width="44" height="44" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8">
+                <path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"/>
+                <polyline points="17 8 12 3 7 8"/>
+                <line x1="12" y1="3" x2="12" y2="15"/>
+              </svg>
+              <h3>Drop Evidence Document Here</h3>
+              <p>Supports PDF, PNG, JPG · Automatic 300 DPI Rendering</p>
+              <div class="drop-assurances">
+                <span>🔒 Original Byte Stream Preserved</span>
+                <span>🔐 SHA-256 Calculated Automatically</span>
+              </div>
+            </div>
+          </div>
+
+          <!-- Documents Ledger Table -->
+          <div class="table-responsive" style="margin-top: 20px;">
+            <table class="forensic-table" id="evidence-locker-table">
+              <thead>
+                <tr>
+                  <th>Evidence ID</th>
+                  <th>File Name</th>
+                  <th>Format & Size</th>
+                  <th>SHA-256 Fingerprint</th>
+                  <th>Ingested Timestamp</th>
+                  <th>Integrity Status</th>
+                  <th>Action</th>
+                </tr>
+              </thead>
+              <tbody id="evidence-locker-tbody">
+                <!-- Dynamically filled -->
+              </tbody>
+            </table>
+          </div>
+        </div>
+      </section>
+
+      <!-- =====================================================================
+           VIEW 4: FINDINGS LEDGER
+           ===================================================================== -->
+      <section class="workspace-view" id="view-findings" style="display: none;">
+        <div class="panel-box">
+          <div class="panel-header">
+            <div class="panel-title-wrap">
+              <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                <polygon points="12 2 2 22 22 22 12 2"/>
+                <line x1="12" y1="9" x2="12" y2="13"/>
+                <line x1="12" y1="17" x2="12.01" y2="17"/>
+              </svg>
+              <h3>Comprehensive Findings Ledger</h3>
+            </div>
+            <div class="findings-filter-chips">
+              <button class="chip-filter active" data-sev="all">All (4)</button>
+              <button class="chip-filter" data-sev="critical">🔴 Critical (2)</button>
+              <button class="chip-filter" data-sev="high">🟠 High (1)</button>
+              <button class="chip-filter" data-sev="medium">🟡 Medium (1)</button>
+              <button class="chip-filter" data-sev="verified">🟢 Verified (0)</button>
+            </div>
+          </div>
+
+          <div class="findings-grid-view" id="findings-full-grid">
+            <!-- Dynamically populated detailed finding cards -->
+          </div>
+        </div>
+      </section>
+
+      <!-- =====================================================================
+           VIEW 5: CHAIN OF CUSTODY
+           ===================================================================== -->
+      <section class="workspace-view" id="view-custody" style="display: none;">
+        <div class="panel-box">
+          <div class="panel-header">
+            <div class="panel-title-wrap">
+              <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                <rect x="3" y="11" width="18" height="11" rx="2" ry="2"/>
+                <path d="M7 11V7a5 5 0 0 1 10 0v4"/>
+              </svg>
+              <h3>Cryptographic Chain of Custody</h3>
+            </div>
+            <span class="badge badge-success">Cryptographically Intact</span>
+          </div>
+
+          <div class="custody-banner">
+            <div class="custody-seal">
+              <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                <path d="M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10z"/>
+                <path d="m9 12 2 2 4-4"/>
+              </svg>
+            </div>
+            <div class="custody-meta">
+              <h4>Active Provenance Record: <code id="custody-doc-id">DOC_20260924_124116_80dba2</code></h4>
+              <p>Cryptographic preservation verified across all analytical stages. Original stream uncompromised.</p>
+            </div>
+          </div>
+
+          <!-- Step-by-step Provenance Flow -->
+          <div class="custody-stepper" id="custody-stepper">
+            <!-- Dynamically populated custody steps -->
+          </div>
+        </div>
+      </section>
+
+      <!-- =====================================================================
+           VIEW 6: FORENSIC TIMELINE
+           ===================================================================== -->
+      <section class="workspace-view" id="view-timeline" style="display: none;">
+        <div class="panel-box">
+          <div class="panel-header">
+            <div class="panel-title-wrap">
+              <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                <circle cx="12" cy="12" r="10"/>
+                <polyline points="12 6 12 12 16 14"/>
+              </svg>
+              <h3>Investigation Chronological Timeline</h3>
+            </div>
+            <div class="timeline-filter-buttons">
+              <button class="t-btn active" data-t-cat="all">All Events</button>
+              <button class="t-btn" data-t-cat="document">Document</button>
+              <button class="t-btn" data-t-cat="analysis">Analysis</button>
+              <button class="t-btn" data-t-cat="findings">Findings</button>
+              <button class="t-btn" data-t-cat="user">Investigator</button>
+            </div>
+          </div>
+
+          <div class="timeline-stream-container" id="timeline-stream">
+            <!-- Dynamically populated stream items -->
+          </div>
+        </div>
+      </section>
+
+      <!-- =====================================================================
+           VIEW 7: COURT REPORTS
+           ===================================================================== -->
+      <section class="workspace-view" id="view-reports" style="display: none;">
+        <div class="panel-box">
+          <div class="panel-header">
+            <div class="panel-title-wrap">
+              <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                <path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"/>
+                <polyline points="14 2 14 8 20 8"/>
+                <path d="M9 15h6"/>
+                <path d="M9 11h6"/>
+              </svg>
+              <h3>Forensic Examination Dossier & Court Docket</h3>
+            </div>
+            <div class="report-actions-row">
+              <button id="btn-export-docket-md" class="btn btn-secondary btn-sm">
+                <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                  <path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"/>
+                  <polyline points="7 10 12 15 17 10"/>
+                  <line x1="12" y1="15" x2="12" y2="3"/>
+                </svg>
+                Export Docket (.MD)
+              </button>
+              <button id="btn-export-json-8" class="btn btn-secondary btn-sm">
+                <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                  <polyline points="16 18 22 12 16 6"/>
+                  <polyline points="8 6 2 12 8 18"/>
+                </svg>
+                Export JSON (§8)
+              </button>
+              <button id="btn-print-report" class="btn btn-primary btn-sm">
+                <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                  <polyline points="6 9 6 2 18 2 18 9"/>
+                  <path d="M6 18H4a2 2 0 0 1-2-2v-5a2 2 0 0 1 2-2h16a2 2 0 0 1 2 2v5a2 2 0 0 1-2 2h-2"/>
+                  <rect x="6" y="14" width="12" height="8"/>
+                </svg>
+                Print Court Dossier
+              </button>
+            </div>
+          </div>
+
+          <!-- Printable Formal Court Report Dossier Preview -->
+          <div class="court-dossier" id="court-dossier-preview">
+            <!-- Dynamically populated court report -->
+          </div>
+        </div>
+      </section>
+
+      <!-- =====================================================================
+           VIEW 8: AUDIT LOG
+           ===================================================================== -->
+      <section class="workspace-view" id="view-audit" style="display: none;">
+        <div class="panel-box">
+          <div class="panel-header">
+            <div class="panel-title-wrap">
+              <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                <path d="M16 4h2a2 2 0 0 1 2 2v14a2 2 0 0 1-2 2H6a2 2 0 0 1-2-2V6a2 2 0 0 1 2-2h2"/>
+                <rect x="8" y="2" width="8" height="4" rx="1" ry="1"/>
+                <path d="M9 14l2 2 4-4"/>
+              </svg>
+              <h3>System Security & Forensic Audit Trail</h3>
+            </div>
+            <span class="badge badge-neutral">Immutable Append-Only Log</span>
+          </div>
+
+          <div class="table-responsive">
+            <table class="forensic-table" id="audit-table">
+              <thead>
+                <tr>
+                  <th>Audit ID</th>
+                  <th>Timestamp (UTC)</th>
+                  <th>Actor</th>
+                  <th>Category</th>
+                  <th>Action Performed</th>
+                  <th>Evidence Target</th>
+                  <th>Status</th>
+                  <th>Cryptographic Signature</th>
+                </tr>
+              </thead>
+              <tbody id="audit-table-body">
+                <!-- Dynamically populated from /api/audit-log -->
+              </tbody>
+            </table>
+          </div>
+        </div>
+      </section>
+
+      <!-- =====================================================================
+           VIEW 9: SETTINGS & THRESHOLDS
+           ===================================================================== -->
+      <section class="workspace-view" id="view-settings" style="display: none;">
+        <div class="panel-box">
+          <div class="panel-header">
+            <h3>Forensic Agent Configuration & Triage Sensitivity</h3>
+          </div>
+          <div class="settings-form">
+            <div class="form-group">
+              <label>Error Level Analysis (ELA) JPEG Recompression Quality:</label>
+              <input type="number" id="setting-ela-quality" value="90" min="50" max="98" class="form-input">
+              <small>Lower values accentuate high-compression anomalies; standard baseline is 90.</small>
+            </div>
+            <div class="form-group">
+              <label>Early Stop Sensitivity Threshold (0 - 100):</label>
+              <input type="number" id="setting-early-stop" value="35" min="10" max="50" class="form-input">
+              <small>Documents below this risk score with pristine metadata bypass deep pixel examination.</small>
+            </div>
+            <div class="form-group">
+              <label>Investigator Signature / Badge Identifier:</label>
+              <input type="text" id="setting-investigator" value="Marcus Vance #CFU-8821" class="form-input">
+            </div>
+            <button id="btn-save-settings" class="btn btn-primary btn-sm">Save Configuration</button>
+          </div>
+        </div>
+      </section>
+
+    </main>
   </div>
 
-  <!-- Script -->
-  <script src="/static/app.js?v=original_theme"></script>
+  <!-- Toast Feedback -->
+  <div id="toast" class="toast" role="status" aria-live="polite" style="display: none;">
+    <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+      <polyline points="20 6 9 17 4 12"></polyline>
+    </svg>
+    <span id="toast-message">Action recorded</span>
+  </div>
+
+  <script src="/static/app.js?v=workstation_3.0"></script>
 </body>
 </html>
