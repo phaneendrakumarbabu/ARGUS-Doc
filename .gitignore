@@ -27,8 +27,10 @@ wheels/
 htmlcov/
 data/artifacts/*
 data/test_artifacts/*
+data/test_samples/*
 !data/artifacts/.gitkeep
 !data/test_artifacts/.gitkeep
+!data/test_samples/.gitkeep
 temp*
 .DS_Store
 Thumbs.db
