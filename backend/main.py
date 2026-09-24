@@ -30,10 +30,11 @@ app.add_middleware(
     allow_headers=["*"],
 )
 
-ARTIFACTS_DIR = Path("data/artifacts")
+BASE_DIR = Path(__file__).resolve().parent.parent
+ARTIFACTS_DIR = BASE_DIR / "data" / "artifacts"
 ARTIFACTS_DIR.mkdir(parents=True, exist_ok=True)
 
-SAMPLES_DIR = Path("data/samples")
+SAMPLES_DIR = BASE_DIR / "data" / "samples"
 SAMPLES_DIR.mkdir(parents=True, exist_ok=True)
 
 orchestrator = ForensicOrchestrator(storage_dir=str(ARTIFACTS_DIR))
@@ -173,7 +174,7 @@ async def get_artifact(doc_id: str, filename: str):
 
 
 # Mount static frontend directory
-frontend_dir = Path("frontend")
+frontend_dir = BASE_DIR / "frontend"
 if frontend_dir.exists():
     app.mount("/static", StaticFiles(directory=str(frontend_dir)), name="static")
 
