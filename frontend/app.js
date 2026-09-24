@@ -91,10 +91,6 @@ document.addEventListener('DOMContentLoaded', () => {
   initTheme();
   setupEventListeners();
   loadSampleMetadata();
-
-  // Automatically analyze the selected sample on startup so the UI is immediately populated
-  const initialSample = elements.sampleSelect ? (elements.sampleSelect.value || 'edited_amount_invoice') : 'edited_amount_invoice';
-  runSampleAnalysis(initialSample);
 });
 
 // --------------------------------------------------------------------------
@@ -102,8 +98,8 @@ document.addEventListener('DOMContentLoaded', () => {
 // --------------------------------------------------------------------------
 function initTheme() {
   const savedTheme = localStorage.getItem('adff-theme');
-  const prefersDark = window.matchMedia && window.matchMedia('(prefers-color-scheme: dark)').matches;
-  const isDark = savedTheme === 'dark' || (!savedTheme && prefersDark);
+  // Default to light theme (matching official reference UI) unless user toggled dark
+  const isDark = savedTheme === 'dark';
 
   applyTheme(isDark);
 

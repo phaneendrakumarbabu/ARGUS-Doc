@@ -12,7 +12,7 @@
   <link href="https://fonts.googleapis.com/css2?family=Architects+Daughter&family=Fira+Code:wght@400;500;600;700&display=swap" rel="stylesheet">
   
   <!-- Stylesheet -->
-  <link rel="stylesheet" href="/static/style.css?v=original_theme">
+  <link rel="stylesheet" href="/static/style.css?v=2.6">
 </head>
 <body>
   <!-- Top Navigation Header -->
@@ -41,9 +41,9 @@
         <label for="sample-select" class="sample-label">Quick Test Cases:</label>
         <div class="select-wrapper">
           <select id="sample-select" aria-label="Select a synthetic test case">
-            <option value="" disabled>Select a synthetic benchmark case...</option>
+            <option value="" disabled selected>Select a synthetic benchmark case...</option>
             <option value="clean_invoice">1. Clean Invoice (Demonstrates Early Stop)</option>
-            <option value="edited_amount_invoice" selected>2. Doctored Invoice ($5.4k -> $95.4k)</option>
+            <option value="edited_amount_invoice">2. Doctored Invoice ($5.4k -> $95.4k)</option>
             <option value="spliced_contract">3. Spliced Contract (Signature & Seal)</option>
             <option value="conflicting_certificate">4. Conflicting Evidence (Photoshop Meta)</option>
           </select>
@@ -350,6 +350,6 @@
   </div>
 
   <!-- Script -->
-  <script src="/static/app.js?v=original_theme"></script>
+  <script src="/static/app.js?v=2.6"></script>
 </body>
 </html>
