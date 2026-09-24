@@ -1,0 +1,13 @@
+version: '3.8'
+
+services:
+  adff-forensics:
+    build: .
+    container_name: adff-forensic-app
+    ports:
+      - "8000:8000"
+    environment:
+      - PYTHONUNBUFFERED=1
+    volumes:
+      - ./data/artifacts:/app/data/artifacts
+    restart: unless-stopped
