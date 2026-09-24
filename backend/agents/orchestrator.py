@@ -289,6 +289,93 @@ class ForensicOrchestrator:
         )
         methods_executed.append("report_generator")
 
+        # Assemble comprehensive document metadata
+        doc_meta_payload = {
+            "file_name": ingest_res.get("filename", filename),
+            "file_type": ingest_res.get("file_type", file_type),
+            "file_size": ingest_res.get("file_size", 0),
+            "sha256": ingest_res.get("sha256", ""),
+            "page_count": ingest_res.get("page_count", len(page_image_paths)),
+            "creator": metadata_res.get("creator") or "N/A",
+            "producer": metadata_res.get("producer") or "N/A",
+            "creation_date": metadata_res.get("creation_date") or "N/A",
+            "mod_date": metadata_res.get("mod_date") or "N/A",
+            "is_modified_post_creation": metadata_res.get("is_modified_post_creation", False),
+            "temporal_anomaly": metadata_res.get("temporal_anomaly", False),
+            "time_difference_desc": metadata_res.get("time_difference_desc", ""),
+            "has_incremental_updates": metadata_res.get("has_incremental_updates", False),
+            "eof_marker_count": metadata_res.get("eof_marker_count", 0),
+            "startxref_count": metadata_res.get("startxref_count", 0),
+            "suspicious_software_flag": metadata_res.get("suspicious_software_flag", False),
+            "software_flags": metadata_res.get("software_flags", []),
+            "raw_metadata": metadata_res.get("raw_metadata", {})
+        }
+
+        # Assemble granular AI & forensic signal breakdown
+        forensic_signals = {
+            "ela_anomaly_score": round(forensics_pages[0].get("ela_anomaly_score", 0.0) * 100, 1) if forensics_pages else 0.0,
+            "noise_inconsistency_score": round(forensics_pages[0].get("noise_inconsistency_score", 0.0) * 100, 1) if forensics_pages else 0.0,
+            "edge_discontinuity_score": round(forensics_pages[0].get("edge_gradient_discontinuity_score", 0.0) * 100, 1) if forensics_pages else 0.0,
+            "typography_anomalies_count": tampering_res.get("typography_mismatch_count", 0),
+            "anomalous_clusters_count": tampering_res.get("total_anomalous_clusters", 0),
+            "copy_move_detected": tampering_res.get("copy_move_detected", False),
+            "suspicious_software_detected": metadata_res.get("suspicious_software_flag", False)
+        }
+
+        # Build cryptographic Chain of Custody
+        custody_time = datetime.now(timezone.utc).strftime("%Y-%m-%d %H:%M:%S UTC")
+        chain_of_custody = [
+            {
+                "step": 1,
+                "phase": "Ingestion & Preserved Stream",
+                "actor": "IngestionAgent",
+                "timestamp": custody_time,
+                "description": f"Verified file header for '{filename}'. Assigned ID '{doc_id}'. Original byte stream secured."
+            },
+            {
+                "step": 2,
+                "phase": "Cryptographic SHA-256 Hashing",
+                "actor": "IngestionAgent",
+                "timestamp": custody_time,
+                "description": f"Computed tamper-evident SHA-256 hash: {ingest_res.get('sha256', '')}"
+            },
+            {
+                "step": 3,
+                "phase": "Layout Baseline & Target Mapping",
+                "actor": "DocumentUnderstandingAgent",
+                "timestamp": custody_time,
+                "description": f"Classified genre as '{understanding_res.get('document_type', 'Document')}' and mapped high-value transaction zones."
+            },
+            {
+                "step": 4,
+                "phase": "PDF Structure & Metadata Inspection",
+                "actor": "MetadataAgent",
+                "timestamp": custody_time,
+                "description": f"Audited dictionary tags, EOF markers (count={metadata_res.get('eof_marker_count', 1)}), and creation timestamps."
+            },
+            {
+                "step": 5,
+                "phase": "Multi-Modal Pixel Forensics",
+                "actor": "ImageForensicsAgent",
+                "timestamp": custody_time,
+                "description": f"Analyzed ELA compression residuals and Laplacian noise variance across {len(page_image_paths)} rendered page(s)."
+            },
+            {
+                "step": 6,
+                "phase": "Evidence Reasoning & Conflict Audit",
+                "actor": "EvidenceReasoningAgent",
+                "timestamp": custody_time,
+                "description": f"Synthesized {len(evidence_items)} evidence item(s) with observation citations and resolved inter-agent contradictions."
+            },
+            {
+                "step": 7,
+                "phase": "Forensic Triage & Docket Generation",
+                "actor": "ReportGeneratorAgent",
+                "timestamp": custody_time,
+                "description": f"Finalized forensic report with Triage Level '{risk_level.value.upper()}' ({risk_score}/100) and human checklist."
+            }
+        ]
+
         report = self.report_agent.generate(
             document_id=doc_id,
             risk_level=risk_level,
@@ -302,7 +389,10 @@ class ForensicOrchestrator:
             execution_trace=execution_trace,
             page_artifacts=page_artifacts,
             document_type=understanding_res.get("document_type", "Commercial Document"),
-            output_dir=doc_dir
+            output_dir=doc_dir,
+            document_metadata=doc_meta_payload,
+            forensic_signals=forensic_signals,
+            chain_of_custody=chain_of_custody
         )
 
         return report

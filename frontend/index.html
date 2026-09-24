@@ -12,7 +12,7 @@
   <link href="https://fonts.googleapis.com/css2?family=Architects+Daughter&family=Fira+Code:wght@400;500;600;700&display=swap" rel="stylesheet">
   
   <!-- Stylesheet -->
-  <link rel="stylesheet" href="/static/style.css?v=2.6">
+  <link rel="stylesheet" href="/static/style.css?v=2.7">
 </head>
 <body>
   <!-- Top Navigation Header -->
@@ -37,6 +37,14 @@
     </div>
 
     <div class="header-center">
+      <div class="header-search-container" role="search">
+        <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" aria-hidden="true">
+          <circle cx="11" cy="11" r="8"/><line x1="21" y1="21" x2="16.65" y2="16.65"/>
+        </svg>
+        <input type="search" id="global-search-input" placeholder="Search findings, regions, metadata, cases..." aria-label="Global forensic search">
+        <span id="search-clear-btn" class="search-clear-btn" style="display: none;" title="Clear search">&times;</span>
+      </div>
+
       <div class="sample-loader-container">
         <label for="sample-select" class="sample-label">Quick Test Cases:</label>
         <div class="select-wrapper">
@@ -58,6 +66,14 @@
     </div>
 
     <div class="header-right">
+      <button id="btn-open-cases" class="btn btn-secondary" aria-label="Open Investigation Cases and Audit Trail" title="View Active Forensic Cases & Chain of Custody Audit Trail">
+        <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" aria-hidden="true">
+          <rect x="2" y="7" width="20" height="14" rx="2" ry="2"/>
+          <path d="M16 21V5a2 2 0 0 0-2-2h-4a2 2 0 0 0-2 2v16"/>
+        </svg>
+        Cases & Audit
+      </button>
+
       <button id="theme-toggle-btn" class="icon-btn" aria-label="Toggle Light and Dark Mode" title="Toggle Light/Dark Theme">
         <svg id="theme-icon-sun" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" aria-hidden="true">
           <circle cx="12" cy="12" r="5"></circle>
@@ -109,6 +125,10 @@
             <span id="current-file-name">filename.pdf</span>
             <span id="current-file-size" class="badge-sub">0 KB</span>
           </div>
+          <div class="file-info-badge" id="ingest-sha-badge" style="display: none; margin-top: 4px; font-family: var(--font-mono); font-size: 0.6875rem;">
+            <span>SHA-256: <code id="ingest-sha-val">...</code></span>
+            <button id="btn-copy-sha" class="copy-hash-btn" title="Copy SHA-256 Checksum">Copy</button>
+          </div>
         </div>
       </div>
 
@@ -124,6 +144,13 @@
           </div>
           <span class="badge badge-subtle" id="trace-step-count">0 Steps</span>
         </div>
+        
+        <div class="timeline-filters">
+          <button class="timeline-filter-btn active" data-filter="all" id="btn-filter-all">All Steps</button>
+          <button class="timeline-filter-btn" data-filter="decisions" id="btn-filter-decisions">Decisions Only</button>
+          <button class="timeline-filter-btn" data-filter="custody" id="btn-filter-custody">Chain of Custody</button>
+        </div>
+
         <p class="section-hint">Autonomous multi-agent control loop with early stop and adaptive re-examination.</p>
         
         <div class="timeline-container" id="timeline-list">
@@ -161,9 +188,17 @@
             </svg>
             Base Document
           </button>
+          <button class="tab-btn" data-view="split" role="tab" aria-selected="false" id="btn-tab-split" title="Side-by-side comparison of Base Document and Heatmap">
+            <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" aria-hidden="true">
+              <rect x="2" y="3" width="20" height="18" rx="2" ry="2"/>
+              <line x1="12" y1="3" x2="12" y2="21"/>
+            </svg>
+            Split Comparison
+          </button>
         </div>
 
         <div class="viewer-actions">
+          <span class="zoom-readout" id="zoom-readout">100%</span>
           <button id="btn-zoom-in" class="icon-btn" title="Zoom In" aria-label="Zoom in">
             <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" aria-hidden="true">
               <circle cx="11" cy="11" r="8"/><line x1="21" y1="21" x2="16.65" y2="16.65"/><line x1="11" y1="8" x2="11" y2="14"/><line x1="8" y1="11" x2="14" y2="11"/>
@@ -203,6 +238,35 @@
           <svg id="interactive-overlay" class="interactive-overlay"></svg>
         </div>
 
+        <!-- Split Comparison Stage -->
+        <div class="split-stage" id="split-stage" style="display: none;">
+          <div class="split-pane">
+            <div class="split-pane-header">
+              <span>Base Document (Reference)</span>
+              <span class="badge badge-subtle">Original</span>
+            </div>
+            <div class="split-pane-img-wrap"><img id="split-base-image" src="" alt="Base Document View"></div>
+          </div>
+          <div class="split-divider"></div>
+          <div class="split-pane">
+            <div class="split-pane-header">
+              <span>Thermal ELA Compression Residuals</span>
+              <span class="badge badge-subtle">Q=90 / Scale=18x</span>
+            </div>
+            <div class="split-pane-img-wrap"><img id="split-heat-image" src="" alt="Thermal ELA Heatmap View"></div>
+          </div>
+        </div>
+
+        <!-- Floating Bounding Box Tooltip -->
+        <div class="region-tooltip" id="region-tooltip" style="display: none;">
+          <div class="region-tooltip-header">
+            <span class="region-tooltip-badge" id="tooltip-conf">0% Conf</span>
+            <span class="region-tooltip-coords" id="tooltip-coords">[0, 0, 0, 0]</span>
+          </div>
+          <div class="tooltip-reason" id="tooltip-reason">Anomalous Region</div>
+          <div class="tooltip-text" id="tooltip-text" style="display: none;">OCR: ""</div>
+        </div>
+
         <!-- Processing Loader -->
         <div class="analysis-spinner-overlay" id="spinner-overlay" style="display: none;">
           <div class="spinner-core" role="status" aria-live="assertive">
@@ -216,7 +280,7 @@
       <div class="regions-bar" id="regions-bar" style="display: none;">
         <div class="regions-header">
           <h4>Localized Anomalies (<span id="region-count">0</span>)</h4>
-          <span class="tag-helper">Click an anomaly to highlight coordinates</span>
+          <span class="tag-helper">Click an anomaly to highlight coordinates and focus region</span>
         </div>
         <div class="regions-carousel" id="regions-chips">
           <!-- Dynamically populated region chips -->
@@ -269,6 +333,74 @@
             <span class="meta-val" id="meta-analysis-date">-</span>
           </div>
         </div>
+
+        <!-- AI Forensic Signal Breakdown Matrix -->
+        <div class="signals-section" id="signals-section" style="display: none;">
+          <div class="signals-section-title">
+            <span>AI Forensic Signals</span>
+            <span class="badge badge-subtle" id="signals-clusters-badge">0 Clusters</span>
+          </div>
+          <div class="signals-grid">
+            <div class="signal-card" title="Error Level Analysis Compression Inconsistency Score">
+              <span class="signal-val" id="signal-ela-val">0.0%</span>
+              <span class="signal-name">ELA Residual Anomaly</span>
+            </div>
+            <div class="signal-card" title="Laplacian Sensor Noise Variance Disparity">
+              <span class="signal-val" id="signal-noise-val">0.0%</span>
+              <span class="signal-name">Sensor Noise Disparity</span>
+            </div>
+            <div class="signal-card" title="Edge Gradient Discontinuity Across Patches">
+              <span class="signal-val" id="signal-edge-val">0.0%</span>
+              <span class="signal-name">Edge Discontinuity</span>
+            </div>
+            <div class="signal-card" title="Font Family, Size, and Baseline Jitter Flags">
+              <span class="signal-val" id="signal-typo-val">0</span>
+              <span class="signal-name">Typography Anomalies</span>
+            </div>
+          </div>
+        </div>
+
+        <!-- Grouped Forensic Metadata Inspector (Level 4) -->
+        <div class="grouped-meta-accordion" id="grouped-meta-accordion" style="display: none;">
+          <div class="meta-group-card">
+            <div class="meta-group-header" data-group="file" role="button" tabindex="0">
+              <span>File Integrity & Hashes</span>
+              <span class="meta-group-icon">▾</span>
+            </div>
+            <div class="meta-group-body" id="meta-group-file">
+              <div class="meta-field-row"><span class="meta-label">File:</span><span class="meta-val" id="meta-group-filename">-</span></div>
+              <div class="meta-field-row"><span class="meta-label">Size:</span><span class="meta-val" id="meta-group-filesize">-</span></div>
+              <div class="meta-field-row"><span class="meta-label">Format:</span><span class="meta-val" id="meta-group-filetype">-</span></div>
+              <div class="meta-field-row"><span class="meta-label">SHA-256:</span><span class="meta-val"><span id="meta-group-sha">-</span><button id="btn-copy-meta-sha" class="copy-hash-btn" title="Copy SHA-256">Copy</button></span></div>
+            </div>
+          </div>
+
+          <div class="meta-group-card">
+            <div class="meta-group-header" data-group="temporal" role="button" tabindex="0">
+              <span>Creation & Temporal History</span>
+              <span class="meta-group-icon">▾</span>
+            </div>
+            <div class="meta-group-body" id="meta-group-temporal">
+              <div class="meta-field-row"><span class="meta-label">Creator:</span><span class="meta-val" id="meta-group-creator">-</span></div>
+              <div class="meta-field-row"><span class="meta-label">Producer:</span><span class="meta-val" id="meta-group-producer">-</span></div>
+              <div class="meta-field-row"><span class="meta-label">Created:</span><span class="meta-val" id="meta-group-created">-</span></div>
+              <div class="meta-field-row"><span class="meta-label">Modified:</span><span class="meta-val" id="meta-group-modified">-</span></div>
+              <div class="meta-field-row"><span class="meta-label">Temporal Check:</span><span class="meta-val" id="meta-group-temporal-desc">-</span></div>
+            </div>
+          </div>
+
+          <div class="meta-group-card">
+            <div class="meta-group-header" data-group="structure" role="button" tabindex="0">
+              <span>Structure & Software Flags</span>
+              <span class="meta-group-icon">▾</span>
+            </div>
+            <div class="meta-group-body" id="meta-group-structure">
+              <div class="meta-field-row"><span class="meta-label">Incremental Updates:</span><span class="meta-val" id="meta-group-incremental">-</span></div>
+              <div class="meta-field-row"><span class="meta-label">%%EOF Markers:</span><span class="meta-val" id="meta-group-eof">-</span></div>
+              <div class="meta-field-row"><span class="meta-label">Software Flags:</span><span class="meta-val" id="meta-group-software">-</span></div>
+            </div>
+          </div>
+        </div>
       </div>
 
       <!-- Unresolved Conflicts Callout -->
@@ -295,6 +427,11 @@
           </div>
           <span class="badge badge-subtle" id="evidence-count">0 items</span>
         </div>
+
+        <div class="evidence-filter-wrap">
+          <input type="text" id="evidence-filter-input" class="filter-input-sm" placeholder="Filter findings or citations..." aria-label="Filter evidence findings">
+        </div>
+
         <div class="evidence-list" id="evidence-list">
           <div class="empty-evidence-text">Evidence lineage will appear here once forensic analysis completes.</div>
         </div>
@@ -333,6 +470,21 @@
           </svg>
           Copy JSON
         </button>
+        <button id="btn-download-docket" class="btn btn-secondary btn-sm" disabled aria-label="Download forensic docket Markdown">
+          <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" aria-hidden="true">
+            <path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"/>
+            <polyline points="7 10 12 15 17 10"/>
+            <line x1="12" y1="15" x2="12" y2="3"/>
+          </svg>
+          Docket (.md)
+        </button>
+        <button id="btn-preview-docket" class="btn btn-secondary btn-sm" disabled aria-label="Preview forensic examination docket">
+          <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" aria-hidden="true">
+            <path d="M1 12s4-8 11-8 11 8 11 8-4 8-11 8-11-8-11-8z"/>
+            <circle cx="12" cy="12" r="3"/>
+          </svg>
+          Preview Docket
+        </button>
       </div>
       
       <p class="legal-disclaimer">
@@ -340,6 +492,84 @@
       </p>
     </aside>
   </main>
+
+  <!-- Cases & Audit Trail Modal Dialog -->
+  <div class="modal-overlay" id="cases-modal" style="display: none;" role="dialog" aria-modal="true" aria-labelledby="cases-modal-title">
+    <div class="modal-card">
+      <div class="modal-header">
+        <div class="modal-title-group">
+          <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+            <rect x="2" y="7" width="20" height="14" rx="2" ry="2"/>
+            <path d="M16 21V5a2 2 0 0 0-2-2h-4a2 2 0 0 0-2 2v16"/>
+          </svg>
+          <h2 id="cases-modal-title" style="font-size: 1.05rem; font-weight: 700;">Forensic Cases & Audit Registry</h2>
+        </div>
+        <button class="modal-close-btn" id="btn-close-cases-modal" aria-label="Close cases modal">&times;</button>
+      </div>
+
+      <div class="modal-tabs" role="tablist">
+        <button class="modal-tab-btn active" data-modal-tab="cases" role="tab">Active Cases (<span id="cases-count-badge">4</span>)</button>
+        <button class="modal-tab-btn" data-modal-tab="audit" role="tab">Audit Trail (<span id="audit-count-badge">4</span>)</button>
+      </div>
+
+      <div class="modal-body">
+        <!-- Cases List -->
+        <div id="modal-tab-cases" class="modal-tab-pane">
+          <div class="cases-grid" id="cases-grid-list">
+            <!-- Populated via API -->
+          </div>
+        </div>
+
+        <!-- Audit Trail Table -->
+        <div id="modal-tab-audit" class="modal-tab-pane" style="display: none;">
+          <div class="audit-table-wrap">
+            <table class="forensic-table">
+              <thead>
+                <tr>
+                  <th>Audit ID</th>
+                  <th>Timestamp</th>
+                  <th>Actor</th>
+                  <th>Action / Event</th>
+                  <th>Target</th>
+                  <th>Status</th>
+                  <th>Checksum</th>
+                </tr>
+              </thead>
+              <tbody id="audit-table-body">
+                <!-- Populated via API -->
+              </tbody>
+            </table>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- Docket Preview Modal Dialog -->
+  <div class="modal-overlay" id="docket-modal" style="display: none;" role="dialog" aria-modal="true" aria-labelledby="docket-modal-title">
+    <div class="modal-card modal-card-lg">
+      <div class="modal-header">
+        <div class="modal-title-group">
+          <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+            <path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"/>
+            <polyline points="14 2 14 8 20 8"/>
+            <line x1="16" y1="13" x2="8" y2="13"/>
+            <line x1="16" y1="17" x2="8" y2="17"/>
+            <polyline points="10 9 9 9 8 9"/>
+          </svg>
+          <h2 id="docket-modal-title" style="font-size: 1.05rem; font-weight: 700;">Forensic Examination Docket Preview</h2>
+        </div>
+        <div class="modal-header-actions">
+          <button id="btn-download-docket-md" class="btn btn-secondary btn-sm">Download (.md)</button>
+          <button id="btn-print-docket" class="btn btn-secondary btn-sm">Print</button>
+          <button class="modal-close-btn" id="btn-close-docket-modal" aria-label="Close docket preview">&times;</button>
+        </div>
+      </div>
+      <div class="modal-body">
+        <pre class="docket-preview-body" id="docket-preview-content">Loading examination docket...</pre>
+      </div>
+    </div>
+  </div>
 
   <!-- Toast Notification Feedback -->
   <div id="toast" class="toast" role="status" aria-live="polite" style="display: none;">
@@ -350,6 +580,6 @@
   </div>
 
   <!-- Script -->
-  <script src="/static/app.js?v=2.6"></script>
+  <script src="/static/app.js?v=2.7"></script>
 </body>
 </html>

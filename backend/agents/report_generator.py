@@ -38,7 +38,10 @@ class ReportGeneratorAgent:
         execution_trace: List[ExecutionLogEntry],
         page_artifacts: List[Dict[str, str]],
         document_type: str,
-        output_dir: str
+        output_dir: str,
+        document_metadata: Optional[Dict[str, Any]] = None,
+        forensic_signals: Optional[Dict[str, Any]] = None,
+        chain_of_custody: Optional[List[Dict[str, Any]]] = None
     ) -> ForensicReport:
         """
         Creates and persists ForensicReport JSON and Markdown docket.
@@ -60,7 +63,10 @@ class ReportGeneratorAgent:
             disclaimer=self.disclaimer,
             execution_trace=execution_trace,
             page_artifacts=page_artifacts,
-            document_type=document_type
+            document_type=document_type,
+            document_metadata=document_metadata,
+            forensic_signals=forensic_signals,
+            chain_of_custody=chain_of_custody
         )
 
         # Save JSON report
@@ -86,6 +92,31 @@ class ReportGeneratorAgent:
         
         md.append("## Methods Executed")
         md.append(", ".join([f"`{m}`" for m in r.methods_executed]) + "\n")
+
+        if r.document_metadata:
+            md.append("## File Metadata & Provenance")
+            md.append(f"- **Filename:** {r.document_metadata.get('file_name', 'N/A')}")
+            md.append(f"- **File Size:** {r.document_metadata.get('file_size', 0):,} bytes")
+            md.append(f"- **SHA-256 Checksum:** `{r.document_metadata.get('sha256', 'N/A')}`")
+            if r.document_metadata.get('creator'):
+                md.append(f"- **Application/Creator:** {r.document_metadata.get('creator')}")
+            if r.document_metadata.get('producer'):
+                md.append(f"- **PDF Producer:** {r.document_metadata.get('producer')}")
+            if r.document_metadata.get('creation_date'):
+                md.append(f"- **Creation Timestamp:** {r.document_metadata.get('creation_date')}")
+            if r.document_metadata.get('mod_date'):
+                md.append(f"- **Modification Timestamp:** {r.document_metadata.get('mod_date')}")
+            if r.document_metadata.get('software_flags'):
+                md.append(f"- **Software Signatures Detected:** {', '.join(r.document_metadata.get('software_flags'))}")
+            md.append("")
+
+        if r.chain_of_custody:
+            md.append("## Forensic Chain of Custody")
+            md.append("| Step | Phase | Action / Verification | Timestamp |")
+            md.append("|---|---|---|---|")
+            for c in r.chain_of_custody:
+                md.append(f"| {c.get('step')} | **{c.get('phase')}** | {c.get('description')} | {c.get('timestamp')} |")
+            md.append("")
 
         md.append("## Suspicious Regions Localized")
         if r.suspicious_regions:

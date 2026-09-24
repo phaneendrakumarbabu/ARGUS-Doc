@@ -131,3 +131,6 @@ class ForensicReport(BaseModel):
     execution_trace: List[ExecutionLogEntry] = Field(default_factory=list)
     page_artifacts: List[Dict[str, str]] = Field(default_factory=list)
     document_type: Optional[str] = None
+    document_metadata: Optional[Dict[str, Any]] = None
+    forensic_signals: Optional[Dict[str, Any]] = None
+    chain_of_custody: Optional[List[Dict[str, Any]]] = None

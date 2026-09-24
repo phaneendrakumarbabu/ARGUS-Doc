@@ -5,6 +5,7 @@ synthetic sample runner, and static frontend hosting.
 """
 
 import os
+from datetime import datetime, timezone
 from pathlib import Path
 from typing import Dict, Any, List
 from fastapi import FastAPI, UploadFile, File, HTTPException
@@ -114,6 +115,17 @@ async def analyze_document(file: UploadFile = File(...)):
 
     try:
         report = orchestrator.execute_pipeline(contents, filename)
+        # Record audit log event
+        AUDIT_LOG_EVENTS.insert(0, {
+            "id": f"AUD-{len(AUDIT_LOG_EVENTS) + 9942}",
+            "timestamp": datetime.now(timezone.utc).strftime("%Y-%m-%d %H:%M:%S UTC"),
+            "actor": "Forensic Analyst",
+            "action": f"Executed pipeline on '{filename}' (Triage: {report.risk_level.value.upper()}, Score: {report.risk_score:.1f})",
+            "target": report.document_id,
+            "category": "Analysis",
+            "status": "Completed",
+            "checksum": (report.document_metadata or {}).get("sha256", "N/A")[:16]
+        })
         return report
     except Exception as e:
         raise HTTPException(status_code=500, detail=f"Forensic pipeline error: {str(e)}")
@@ -139,36 +151,20 @@ async def analyze_sample(sample_id: str):
 
     try:
         report = orchestrator.execute_pipeline(str(target_path), target_path.name)
+        # Record audit log event
+        AUDIT_LOG_EVENTS.insert(0, {
+            "id": f"AUD-{len(AUDIT_LOG_EVENTS) + 9942}",
+            "timestamp": datetime.now(timezone.utc).strftime("%Y-%m-%d %H:%M:%S UTC"),
+            "actor": "Forensic Analyst",
+            "action": f"Analyzed benchmark sample '{sample_id}' (Triage: {report.risk_level.value.upper()}, Score: {report.risk_score:.1f})",
+            "target": report.document_id,
+            "category": "Benchmark Audit",
+            "status": "Completed",
+            "checksum": (report.document_metadata or {}).get("sha256", "N/A")[:16]
+        })
         return report
     except Exception as e:
         raise HTTPException(status_code=500, detail=f"Error executing sample analysis: {str(e)}")
-
-
-@app.get("/api/samples")
-async def list_samples():
-    """Returns available synthetic benchmark test cases."""
-    return [
-        {
-            "id": "clean_invoice",
-            "name": "1. Clean Invoice (Demonstrates Early Stop)",
-            "description": "Standard invoice with authentic metadata and uniform ELA residuals."
-        },
-        {
-            "id": "edited_amount_invoice",
-            "name": "2. Doctored Invoice ($5.4k -> $95.4k)",
-            "description": "High-risk invoice with localized raster patching on the numeric total."
-        },
-        {
-            "id": "spliced_contract",
-            "name": "3. Spliced Contract (Signature & Seal)",
-            "description": "PNG document with spliced execution signature block and noise variance."
-        },
-        {
-            "id": "conflicting_certificate",
-            "name": "4. Conflicting Evidence (Photoshop Meta)",
-            "description": "Certificate exhibiting Photoshop XMP history with uniform visual pixels."
-        }
-    ]
 
 
 @app.get("/api/reports/{doc_id}")
@@ -178,6 +174,15 @@ async def get_report(doc_id: str):
     if not report_file.exists():
         raise HTTPException(status_code=404, detail="Report not found.")
     return FileResponse(str(report_file), media_type="application/json")
+
+
+@app.get("/api/reports/{doc_id}/docket")
+async def get_report_docket(doc_id: str):
+    """Retrieves the Markdown forensic docket for human investigators."""
+    docket_file = ARTIFACTS_DIR / doc_id / "forensic_docket.md"
+    if not docket_file.exists():
+        raise HTTPException(status_code=404, detail="Forensic docket not found.")
+    return FileResponse(str(docket_file), media_type="text/markdown")
 
 
 @app.get("/api/artifacts/{doc_id}/{filename}")
