@@ -144,6 +144,33 @@ async def analyze_sample(sample_id: str):
         raise HTTPException(status_code=500, detail=f"Error executing sample analysis: {str(e)}")
 
 
+@app.get("/api/samples")
+async def list_samples():
+    """Returns available synthetic benchmark test cases."""
+    return [
+        {
+            "id": "clean_invoice",
+            "name": "1. Clean Invoice (Demonstrates Early Stop)",
+            "description": "Standard invoice with authentic metadata and uniform ELA residuals."
+        },
+        {
+            "id": "edited_amount_invoice",
+            "name": "2. Doctored Invoice ($5.4k -> $95.4k)",
+            "description": "High-risk invoice with localized raster patching on the numeric total."
+        },
+        {
+            "id": "spliced_contract",
+            "name": "3. Spliced Contract (Signature & Seal)",
+            "description": "PNG document with spliced execution signature block and noise variance."
+        },
+        {
+            "id": "conflicting_certificate",
+            "name": "4. Conflicting Evidence (Photoshop Meta)",
+            "description": "Certificate exhibiting Photoshop XMP history with uniform visual pixels."
+        }
+    ]
+
+
 @app.get("/api/reports/{doc_id}")
 async def get_report(doc_id: str):
     """Retrieves a previously computed report JSON."""
